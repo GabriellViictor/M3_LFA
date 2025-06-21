@@ -1,17 +1,16 @@
-package Interface;
-
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 public class Interface extends javax.swing.JFrame {
 
-    public JPanel view = new JPanel();
     public JTextArea jtaFita = new JTextArea();
+    public JTextArea jtaOutput = new JTextArea();
+    public String output = "";
 
     public Interface() {
         initComponents();
@@ -19,42 +18,42 @@ public class Interface extends javax.swing.JFrame {
 
     private void initComponents() {
         // Componentes da interface
-        jSPAutomato = new javax.swing.JScrollPane(view);
         jButtonPasso = new javax.swing.JButton();
         jButtonPassoAnterior = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane(jtaFita);
+        jScrollPaneJtaFita = new javax.swing.JScrollPane(jtaFita);
+        jSPAutomato = new javax.swing.JScrollPane(jtaOutput);
         jMenuBarTitulo = new javax.swing.JMenuBar();
         jMenuArquivo = new javax.swing.JMenu();
         jMenuItemAbrir = new javax.swing.JMenuItem();
 
-        jMenuEntrada = new javax.swing.JMenu();
-
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-
-        // Configuração básica da janela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Máquina de Turing");
 
-        // Painel principal (área de desenho)
-        view.setBackground(Color.WHITE);
-        view.setLayout(new FlowLayout(FlowLayout.CENTER));
-        jSPAutomato.setViewportView(view);
-
-        // Botões de controle
         jButtonPasso.setText("Próximo Passo");
+        jButtonPasso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonPassoActionPerformed(evt);}
+        });
+
         jButtonPassoAnterior.setText("Passo Anterior");
+        jButtonPassoAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonPassoAnteriorActionPerformed(evt);}
+        });
+
         jLabel1.setText("Fita da Máquina");
 
-        // Área de texto da fita
         jtaFita.setEditable(false);
         jtaFita.setDisabledTextColor(new Color(0, 0, 51));
-        jScrollPane5.setViewportView(jtaFita);
+        jtaFita.setText("Insira o programa de transição para iniciar...");
+        jScrollPaneJtaFita.setViewportView(jtaFita);
 
-        // Menu Arquivo
+        jtaOutput.setEditable(false);
+        jtaOutput.setDisabledTextColor(new Color(0, 0, 0));
+        jtaOutput.setText("");
+        jSPAutomato.setViewportView(jtaOutput);
+
         jMenuArquivo.setText("Arquivo");
-        jMenuItemAbrir.setText("Abrir");
+        jMenuItemAbrir.setText("Programa de transição...");
         jMenuArquivo.add(jMenuItemAbrir);
         jMenuItemAbrir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -64,11 +63,7 @@ public class Interface extends javax.swing.JFrame {
         jMenuArquivo.add(jMenuItemAbrir);
 
 
-        // Adiciona menus à barra
         jMenuBarTitulo.add(jMenuArquivo);
-        jMenuBarTitulo.add(jMenuEntrada);
-        jMenuBarTitulo.add(jMenu2);
-        jMenuBarTitulo.add(jMenu3);
         setJMenuBar(jMenuBarTitulo);
 
         // Layout da janela principal
@@ -76,7 +71,7 @@ public class Interface extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane5)
+                        .addComponent(jScrollPaneJtaFita)
                         .addComponent(jSPAutomato)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -94,7 +89,7 @@ public class Interface extends javax.swing.JFrame {
                                         .addComponent(jButtonPassoAnterior)
                                         .addComponent(jButtonPasso))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPaneJtaFita, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSPAutomato, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
         );
@@ -110,50 +105,62 @@ public class Interface extends javax.swing.JFrame {
         });
     }
 
-    private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirActionPerformed
-        // TODO add your handling code here:
-        if(graph == null) graph = new Graph();
-        int k = -1; //não há automato criado
-        Object[] options = { "Confirmar", "Cancelar" };
-        if (graph.getVertex().size()!= 0)
-            k = JOptionPane.showOptionDialog(null, "Você perderá o automato atual, deseja continuar", "Informação", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+    private void jButtonPassoActionPerformed(java.awt.event.ActionEvent evt) {
+        //TODO
+        System.out.println("Proximo Passo");
+        output += "Proximo\n";
+        jtaOutput.setText(output);
+    }
 
-        if (k == 0){
-            this.graph.delAllVertex();
-            view.cleanImage();
-            view.repaint();
+    private void jButtonPassoAnteriorActionPerformed(java.awt.event.ActionEvent evt) {
+        //TODO
+        System.out.println("Passo Anterior");
+    }
+
+    private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(this);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String transicao = readfile(selectedFile);
+            Turing turing = new Turing();
+            turing.setTransicao(transicao);
+            System.out.println(turing.getTransicao());
+            jtaFita.setEditable(true);
+            jtaFita.setDisabledTextColor(new Color(0, 0, 0));
+            jtaFita.setText("");
+            //TODO
         }
-        JFileChooser abrirImagem = new JFileChooser();
-        //abrirImagem.setCurrentDirectory(new java.io.File("C:\\Users\\Admin\\Documents\\9 semestre\\Teoria\\exercicios jflap\\10.04\\testeMore.jff"));
+    }
 
-        if (abrirImagem.showOpenDialog(jMenuArquivo) == JFileChooser.APPROVE_OPTION){
-            File F = abrirImagem.getSelectedFile();
-            this.caminho = F.getAbsolutePath();
-            abrirImagem.setCurrentDirectory(new java.io.File(caminho));
-            try {
-                System.out.println(caminho);
-                Arquivo.lerArquivos(caminho, this.graph, this.view);
-            } catch (IOException ex) {
-                Logger.getLogger(IUMTuring.class.getName()).log(Level.SEVERE, null, ex);
+    private String readfile(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            int character;
+            StringBuilder texto = new StringBuilder();
+            while ((character = reader.read()) != -1) {
+                char c = (char) character;
+                // Processa cada caractere aqui
+                System.out.print(c); // Exemplo: imprime cada caractere
+                texto.append(c);
             }
-
+            return texto.toString();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao ler o arquivo: " + ex.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
-
-
-    }//GEN-LAST:event_jMenuItemAbrirActionPerformed
-
+        return null;
+    }
 
     private javax.swing.JButton jButtonPasso;
     private javax.swing.JButton jButtonPassoAnterior;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenuArquivo;
     private javax.swing.JMenuBar jMenuBarTitulo;
-    private javax.swing.JMenu jMenuEntrada;
     private javax.swing.JMenuItem jMenuItemAbrir;
     private javax.swing.JScrollPane jSPAutomato;
-    private javax.swing.JScrollPane jScrollPane5;
-
+    private javax.swing.JScrollPane jScrollPaneJtaFita;
 
 }
