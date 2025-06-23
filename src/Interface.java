@@ -1,10 +1,12 @@
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.*;
+import java.io.*;
+import java.util.*;
 
 public class Interface extends javax.swing.JFrame {
 
@@ -18,8 +20,8 @@ public class Interface extends javax.swing.JFrame {
 
     private void initComponents() {
         // Componentes da interface
-        jButtonPasso = new javax.swing.JButton();
-        jButtonPassoAnterior = new javax.swing.JButton();
+        jButtonRun = new javax.swing.JButton();
+        jButtonReset = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPaneJtaFita = new javax.swing.JScrollPane(jtaFita);
         jSPAutomato = new javax.swing.JScrollPane(jtaOutput);
@@ -30,14 +32,16 @@ public class Interface extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Máquina de Turing");
 
-        jButtonPasso.setText("Próximo Passo");
-        jButtonPasso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonPassoActionPerformed(evt);}
+        jButtonRun.setText("Analisar");
+        jButtonRun.setEnabled(false);
+        jButtonRun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonRunActionPerformed(evt);}
         });
 
-        jButtonPassoAnterior.setText("Passo Anterior");
-        jButtonPassoAnterior.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonPassoAnteriorActionPerformed(evt);}
+        jButtonReset.setText("Limpar");
+        jButtonReset.setEnabled(false);
+        jButtonReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonResetActionPerformed(evt);}
         });
 
         jLabel1.setText("Fita da Máquina");
@@ -76,9 +80,9 @@ public class Interface extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonPasso)
+                                .addComponent(jButtonRun)
+                                .addComponent(jButtonReset)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonPassoAnterior)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -86,8 +90,8 @@ public class Interface extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel1)
-                                        .addComponent(jButtonPassoAnterior)
-                                        .addComponent(jButtonPasso))
+                                        .addComponent(jButtonRun)
+                                        .addComponent(jButtonReset))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPaneJtaFita, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -105,36 +109,56 @@ public class Interface extends javax.swing.JFrame {
         });
     }
 
-    private void jButtonPassoActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt) {
         //TODO
         System.out.println("Proximo Passo");
         output += "Proximo\n";
         jtaOutput.setText(output);
     }
-
-    private void jButtonPassoAnteriorActionPerformed(java.awt.event.ActionEvent evt) {
-        //TODO
-        System.out.println("Passo Anterior");
+    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {
+        System.out.println("RESET CALL");
+        controlUI(false);
+        output = "";
+        jtaOutput.setText(output);
     }
 
     private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(new java.io.File("resources"));
         int returnValue = fileChooser.showOpenDialog(this);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            String transicao = readfile(selectedFile);
-            Turing turing = new Turing();
-            turing.setTransicao(transicao);
-            System.out.println(turing.getTransicao());
-            jtaFita.setEditable(true);
-            jtaFita.setDisabledTextColor(new Color(0, 0, 0));
-            jtaFita.setText("");
-            //TODO
+            //String transicao = loadTransition(selectedFile);
+            try {
+                String transicao = Transition.loadTransitions(selectedFile.getPath());
+                output += "------------- FUNÇÃO DE TRANSIÇÃO CARREGADA -------------\n"+transicao;
+                jtaOutput.setText(output);
+                controlUI(true);
+                //TODO
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private String readfile(File file) {
+    private void controlUI(boolean enabled) {
+        if(enabled) {
+            jtaFita.setEditable(true);
+            jtaFita.setDisabledTextColor(new Color(0, 0, 0));
+            jtaFita.setText("");
+            jButtonRun.setEnabled(true);
+            jButtonReset.setEnabled(true);
+        }else{
+            jtaFita.setEditable(false);
+            jtaFita.setDisabledTextColor(new Color(0, 0, 51));
+            jtaFita.setText("Insira o programa de transição para iniciar...");
+            jButtonReset.setEnabled(false);
+            jButtonRun.setEnabled(false);
+        }
+
+    }
+
+    private String loadTransition(File file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int character;
             StringBuilder texto = new StringBuilder();
@@ -154,8 +178,10 @@ public class Interface extends javax.swing.JFrame {
         return null;
     }
 
-    private javax.swing.JButton jButtonPasso;
-    private javax.swing.JButton jButtonPassoAnterior;
+
+
+    private javax.swing.JButton jButtonRun;
+    private javax.swing.JButton jButtonReset;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenuArquivo;
     private javax.swing.JMenuBar jMenuBarTitulo;
