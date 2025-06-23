@@ -6,7 +6,6 @@ import java.util.*;
 
 
 public class Transition {
-    private String transicao;
     private String currentState,currentSymbol,newState,newSymbol;
     private String direction;
 
@@ -22,13 +21,6 @@ public class Transition {
         return "(" + currentState + ", " + currentSymbol + ") -> (" + newState + ", " + newSymbol + ", " + direction + ")";
     }
 
-    public String getTransicao() {
-        return transicao;
-    }
-
-    public void setTransicao(String transicao) {
-        this.transicao = transicao;
-    }
 
     public static String loadTransitions(String filePath) throws IOException {
         List<Transition> transitions = new ArrayList<>();

@@ -123,18 +123,17 @@ public class Interface extends javax.swing.JFrame {
     }
 
     private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {
+        //TODO !!!!!!!!!!!!!!!!!!!!!!
         JFileChooser fileChooser = new JFileChooser(new java.io.File("resources"));
         int returnValue = fileChooser.showOpenDialog(this);
-
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            //String transicao = loadTransition(selectedFile);
             try {
                 String transicao = Transition.loadTransitions(selectedFile.getPath());
                 output += "------------- FUNÇÃO DE TRANSIÇÃO CARREGADA -------------\n"+transicao;
                 jtaOutput.setText(output);
                 controlUI(true);
-                //TODO
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
