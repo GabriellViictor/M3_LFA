@@ -18,7 +18,7 @@ public class Transition {
     }
 
     public String saida() {
-        return "(" + currentState + ", " + currentSymbol + ") -> (" + newState + ", " + newSymbol + ", " + direction + ")";
+        return "(" + currentState + ", " + currentSymbol + ") ➡ (" + newState + ", " + newSymbol + ", " + direction + ")";
     }
 
 

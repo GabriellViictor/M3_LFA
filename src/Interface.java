@@ -1,14 +1,25 @@
-import java.awt.Color;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.util.*;
 
 public class Interface extends javax.swing.JFrame {
+
+    private static final int H = 800;
+    private static final int W = 1100;
+    private static final Font LABEL_FONT = new Font("SansSerif", Font.BOLD, 24);
+    private static final Font TEXT_FONT = new Font("SansSerif", Font.PLAIN, 20);
+    private static final Font BUTTON_FONT = new Font("SansSerif", Font.PLAIN, 22);
+    private static final Font MENU_FONT = new Font("SansSerif", Font.BOLD, 18);
+    private static final Color DISABLED_COLOR = new Color(150, 150, 150);
+    private static final Color ENABLED_COLOR = new Color(0, 0, 0);
+
 
     public JTextArea jtaFita = new JTextArea();
     public JTextArea jtaOutput = new JTextArea();
@@ -19,7 +30,19 @@ public class Interface extends javax.swing.JFrame {
     }
 
     private void initComponents() {
-        // Componentes da interface
+        System.setProperty("awt.useSystemAAFontSettings", "on");
+        System.setProperty("swing.aatext", "true");
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // fallback se Nimbus não estiver disponível
+        }
+
         jButtonRun = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -31,33 +54,43 @@ public class Interface extends javax.swing.JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Máquina de Turing");
+        setPreferredSize(new Dimension(W, H));
+        pack();
+        setMinimumSize(new Dimension(W, H));
 
-        jButtonRun.setText("Analisar");
+        jButtonRun.setText("✨ Analisar");
+        jButtonRun.setFont(BUTTON_FONT);
         jButtonRun.setEnabled(false);
         jButtonRun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonRunActionPerformed(evt);}
         });
 
-        jButtonReset.setText("Limpar");
+        jButtonReset.setText("❌ Limpar");
         jButtonReset.setEnabled(false);
+        jButtonReset.setFont(BUTTON_FONT);
         jButtonReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonResetActionPerformed(evt);}
         });
 
-        jLabel1.setText("Fita da Máquina");
+        jLabel1.setText("Fita da Máquina:");
+        jLabel1.setFont(LABEL_FONT);
 
         jtaFita.setEditable(false);
-        jtaFita.setDisabledTextColor(new Color(0, 0, 51));
+        jtaFita.setDisabledTextColor(DISABLED_COLOR);
         jtaFita.setText("Insira o programa de transição para iniciar...");
+        jtaFita.setFont(TEXT_FONT);
         jScrollPaneJtaFita.setViewportView(jtaFita);
 
         jtaOutput.setEditable(false);
         jtaOutput.setDisabledTextColor(new Color(0, 0, 0));
         jtaOutput.setText("");
+        jtaOutput.setFont(TEXT_FONT);
         jSPAutomato.setViewportView(jtaOutput);
 
         jMenuArquivo.setText("Arquivo");
-        jMenuItemAbrir.setText("Programa de transição...");
+        jMenuArquivo.setFont(MENU_FONT);
+        jMenuItemAbrir.setText("Abrir Programa...");
+        jMenuItemAbrir.setFont(MENU_FONT);
         jMenuArquivo.add(jMenuItemAbrir);
         jMenuItemAbrir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -78,7 +111,7 @@ public class Interface extends javax.swing.JFrame {
                         .addComponent(jScrollPaneJtaFita)
                         .addComponent(jSPAutomato)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonRun)
                                 .addComponent(jButtonReset)
@@ -93,9 +126,9 @@ public class Interface extends javax.swing.JFrame {
                                         .addComponent(jButtonRun)
                                         .addComponent(jButtonReset))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPaneJtaFita, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPaneJtaFita, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSPAutomato, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
+                                .addComponent(jSPAutomato, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE))
         );
 
         pack();
@@ -125,36 +158,55 @@ public class Interface extends javax.swing.JFrame {
     private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {
         //TODO !!!!!!!!!!!!!!!!!!!!!!
         JFileChooser fileChooser = new JFileChooser(new java.io.File("resources"));
+        fileChooser.setPreferredSize(new Dimension(800, 600));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setDialogTitle("Selecione o Programa");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos de Texto (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try {
-                String transicao = Transition.loadTransitions(selectedFile.getPath());
-                output += "------------- FUNÇÃO DE TRANSIÇÃO CARREGADA -------------\n"+transicao;
-                jtaOutput.setText(output);
-                controlUI(true);
+            if (selectedFile.getPath().endsWith(".txt")) {
+                try {
+                    String transicao = Transition.loadTransitions(selectedFile.getPath());
+                    output += "------------- FUNÇÃO DE TRANSIÇÃO CARREGADA -------------\n"+transicao;
+                    jtaOutput.setText(output);
+                    controlUI(true);
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                errorDialog("Arquivo deve ser do tipo TXT");
             }
+
         }
     }
 
     private void controlUI(boolean enabled) {
         if(enabled) {
             jtaFita.setEditable(true);
-            jtaFita.setDisabledTextColor(new Color(0, 0, 0));
+            jtaFita.setDisabledTextColor(ENABLED_COLOR);
             jtaFita.setText("");
             jButtonRun.setEnabled(true);
             jButtonReset.setEnabled(true);
         }else{
             jtaFita.setEditable(false);
-            jtaFita.setDisabledTextColor(new Color(0, 0, 51));
+            jtaFita.setDisabledTextColor(DISABLED_COLOR);
             jtaFita.setText("Insira o programa de transição para iniciar...");
             jButtonReset.setEnabled(false);
             jButtonRun.setEnabled(false);
         }
 
+    }
+
+    private void errorDialog(String msg) {
+        JOptionPane.showMessageDialog(
+                null,
+                msg,
+                "Erro",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     private String loadTransition(File file) {
