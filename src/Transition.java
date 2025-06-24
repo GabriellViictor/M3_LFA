@@ -44,10 +44,14 @@ public class Transition {
     }
 
     public String verifyTransitions(String tape){
+        String output = "";
         if(isValidTape(tape)){
             setSentence(tape);
             runTuringMachine();
-            return resultLabel+"\n"+stepsField.toString();
+            output = resultLabel+"\n"
+                    +"Passo | "+"Estado atual | "+"Simbolo lido | "+"Sentido | "+"Fita\n"
+                    + stepsField.toString();
+            return output;
 
         }
         return "invalid tape";
@@ -111,10 +115,14 @@ public class Transition {
                 }
                 i++;
             }
+            String firstSpace = "  ";
+            if (step>9)
+                firstSpace = "";
 
-            stepsField.append("Passo " + step + ": Estado atual: " + currentState +
-                    ", Símbolo lido: " + currentSymbol +
-                    ", Fita: " + tapeToString(tape) + "\n");
+
+            stepsField.append(firstSpace+step + "                  " + currentState +
+                    "                 " + currentSymbol + "                " +transitionFound.direction+
+                    "       " + tapeToString(tape) + "\n");
 
             if (transitionFound == null) {
                 resultLabel = "Sentença Rejeitada!";
@@ -140,8 +148,9 @@ public class Transition {
             }
 
             if (currentState.equals(finalState)) {
-                stepsField.append("Passo " + step + ": Estado atual: " + currentState +
-                        ", Fita: " + tapeToString(tape) + "\n");
+                stepsField.append(firstSpace+step + "                  " + currentState +
+                        "                 " + currentSymbol + "                " +transitionFound.direction+
+                        "       " + tapeToString(tape) + "\n");
                 resultLabel = "Sentença Aceita!";
                 break;
             }
