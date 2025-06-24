@@ -1,13 +1,8 @@
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.*;
-import java.util.*;
 
 public class Interface extends javax.swing.JFrame {
 
@@ -19,7 +14,7 @@ public class Interface extends javax.swing.JFrame {
     private static final Font MENU_FONT = new Font("SansSerif", Font.BOLD, 18);
     private static final Color DISABLED_COLOR = new Color(150, 150, 150);
     private static final Color ENABLED_COLOR = new Color(0, 0, 0);
-    Transition transition = new Transition();
+    TuringMachine turingMachine = new TuringMachine();
 
     public JTextArea jtaFita = new JTextArea();
     public JTextArea jtaOutput = new JTextArea();
@@ -146,7 +141,7 @@ public class Interface extends javax.swing.JFrame {
         String fita = jtaFita.getText();
         output += "\n------------- INICIANDO VERIFICACAO -------------\nFITA: "+fita;
         jtaOutput.setText(output);
-        String analise = transition.verifyTransitions(fita);
+        String analise = turingMachine.verifyTransitions(fita);
         output += "\n-*-*-*-*-*- ANÁLISE -*-*-*-*-*-\n"+analise;
         jtaOutput.setText(output);
     }
@@ -155,7 +150,7 @@ public class Interface extends javax.swing.JFrame {
         controlUI(false);
         output = "";
         jtaOutput.setText(output);
-        transition = new Transition();
+        turingMachine = new TuringMachine();
     }
 
     private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {
@@ -171,7 +166,7 @@ public class Interface extends javax.swing.JFrame {
             File selectedFile = fileChooser.getSelectedFile();
             if (selectedFile.getPath().endsWith(".txt")) {
                 try {
-                    String transicao = transition.loadTransitions(selectedFile.getPath());
+                    String transicao = turingMachine.loadTransitions(selectedFile.getPath());
                     output += "------------- FUNÇÃO DE TRANSIÇÃO CARREGADA -------------\n"+transicao;
                     jtaOutput.setText(output);
                     controlUI(true);
