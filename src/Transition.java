@@ -59,7 +59,8 @@ public class Transition {
 
     public String loadTransitions(String filePath) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
-
+        transitions.clear();
+        alphabet.clear();
         for (int i = 0; i < lines.size() - 1; i++) {
             String[] parts = lines.get(i).trim().split(",\\s*");
             if (parts.length == 5) {
@@ -112,14 +113,16 @@ public class Transition {
                     break;
                 }
             }
-            String firstSpace = "  ";
+            String firstSpace = "   ";
             if (step>9)
+                firstSpace = " ";
+            if (step > 99)
                 firstSpace = "";
 
 
-            stepsField.append(firstSpace+step + "                  " + currentState +
-                    "                 " + currentSymbol + "                " +transitionFound.direction+
-                    "       " + tapeToString(tape) + "\n");
+            stepsField.append(firstSpace+step + "                    " + currentState +
+                    "                         " + currentSymbol + "                   " +transitionFound.direction+
+                    "           " + tapeToString(tape) + "\n");
 
             if (transitionFound == null) {
                 resultLabel = "Sentença Rejeitada!";
@@ -145,9 +148,9 @@ public class Transition {
             }
 
             if (currentState.equals(finalState)) {
-                stepsField.append(firstSpace+step + "                  " + currentState +
-                        "                 " + currentSymbol + "                " +transitionFound.direction+
-                        "       " + tapeToString(tape) + "\n");
+                stepsField.append(firstSpace+step + "                    " + currentState +
+                        "                         " + currentSymbol + "                   " +transitionFound.direction+
+                        "           " + tapeToString(tape) + "\n");
                 resultLabel = "Sentença Aceita!";
                 break;
             }
