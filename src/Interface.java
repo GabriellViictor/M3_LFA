@@ -19,7 +19,7 @@ public class Interface extends javax.swing.JFrame {
     private static final Font MENU_FONT = new Font("SansSerif", Font.BOLD, 18);
     private static final Color DISABLED_COLOR = new Color(150, 150, 150);
     private static final Color ENABLED_COLOR = new Color(0, 0, 0);
-
+    Transition transition = new Transition();
 
     public JTextArea jtaFita = new JTextArea();
     public JTextArea jtaOutput = new JTextArea();
@@ -143,9 +143,11 @@ public class Interface extends javax.swing.JFrame {
     }
 
     private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt) {
-        //TODO
-        System.out.println("Proximo Passo");
-        output += "Proximo\n";
+        String fita = jtaFita.getText();
+        output += "\n------------- INICIANDO VERIFICACAO -------------\nFITA: "+fita;
+        jtaOutput.setText(output);
+        String analise = transition.verifyTransitions(fita);
+        output += "\n-*-*-*-*-*- ANÁLISE -*-*-*-*-*-\n"+analise;
         jtaOutput.setText(output);
     }
     private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,6 +155,7 @@ public class Interface extends javax.swing.JFrame {
         controlUI(false);
         output = "";
         jtaOutput.setText(output);
+        transition = new Transition();
     }
 
     private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,7 +171,7 @@ public class Interface extends javax.swing.JFrame {
             File selectedFile = fileChooser.getSelectedFile();
             if (selectedFile.getPath().endsWith(".txt")) {
                 try {
-                    String transicao = Transition.loadTransitions(selectedFile.getPath());
+                    String transicao = transition.loadTransitions(selectedFile.getPath());
                     output += "------------- FUNÇÃO DE TRANSIÇÃO CARREGADA -------------\n"+transicao;
                     jtaOutput.setText(output);
                     controlUI(true);
@@ -208,27 +211,6 @@ public class Interface extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE
         );
     }
-
-    private String loadTransition(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            int character;
-            StringBuilder texto = new StringBuilder();
-            while ((character = reader.read()) != -1) {
-                char c = (char) character;
-                // Processa cada caractere aqui
-                System.out.print(c); // Exemplo: imprime cada caractere
-                texto.append(c);
-            }
-            return texto.toString();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Erro ao ler o arquivo: " + ex.getMessage(),
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-        return null;
-    }
-
 
 
     private javax.swing.JButton jButtonRun;
