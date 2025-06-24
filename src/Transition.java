@@ -106,14 +106,11 @@ public class Transition {
             char currentSymbol = (head < tape.size()) ? tape.get(head) : 'x';
             System.out.println("simbolo atual: "+currentSymbol);
             Transition transitionFound = null;
-            int i = 0;
             for (Transition t : transitions) {
-                System.out.println("RUN FOR");
                 if (t.currentState.equals(currentState) && t.currentSymbol.charAt(0) == currentSymbol) { // t.currentSymbol.charAt(0) == currentSymbol
                     transitionFound = t;
                     break;
                 }
-                i++;
             }
             String firstSpace = "  ";
             if (step>9)
