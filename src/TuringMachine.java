@@ -107,15 +107,14 @@ public class TuringMachine {
             if (step > 99)
                 firstSpace = "";
 
-
-            stepsField.append(firstSpace+step + "                    " + currentState +
-                    "                         " + currentSymbol + "                   " +transitionFound.direction+
-                    "           " + tapeToString(tape) + "\n");
-
             if (transitionFound == null) {
                 resultLabel = "Sentença Rejeitada!";
                 break;
             }
+
+            stepsField.append(firstSpace+step + "                    " + currentState +
+                    "                         " + currentSymbol + "                   " +transitionFound.direction+
+                    "           " + tapeToString(tape) + "\n");
 
             // Aplica a transição
             tape.set(head, transitionFound.newSymbol.charAt(0));
