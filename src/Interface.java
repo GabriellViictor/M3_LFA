@@ -57,14 +57,14 @@ public class Interface extends javax.swing.JFrame {
         jButtonRun.setFont(BUTTON_FONT);
         jButtonRun.setEnabled(false);
         jButtonRun.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonRunActionPerformed(evt);}
+            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonRunActionPerformed();}
         });
 
         jButtonReset.setText("❌ Limpar");
         jButtonReset.setEnabled(false);
         jButtonReset.setFont(BUTTON_FONT);
         jButtonReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonResetActionPerformed(evt);}
+            public void actionPerformed(java.awt.event.ActionEvent evt) {jButtonResetActionPerformed();}
         });
 
         jLabel1.setText("Fita da Máquina:");
@@ -74,7 +74,17 @@ public class Interface extends javax.swing.JFrame {
         jtaFita.setDisabledTextColor(DISABLED_COLOR);
         jtaFita.setText("Insira o programa de transição para iniciar...");
         jtaFita.setFont(TEXT_FONT);
+        jtaFita.setLineWrap(false);
+        jtaFita.setWrapStyleWord(false);
         jScrollPaneJtaFita.setViewportView(jtaFita);
+        jtaFita.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    evt.consume();
+                    jButtonRunActionPerformed();
+                }
+            }
+        });
 
         jtaOutput.setEditable(false);
         jtaOutput.setDisabledTextColor(new Color(0, 0, 0));
@@ -137,7 +147,7 @@ public class Interface extends javax.swing.JFrame {
         });
     }
 
-    private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButtonRunActionPerformed() {
         String fita = jtaFita.getText();
         output += "\n------------- INICIANDO VERIFICACAO -------------\nFITA: "+fita;
         jtaOutput.setText(output);
@@ -145,7 +155,7 @@ public class Interface extends javax.swing.JFrame {
         output += "\n-*-*-*-*-*- ANÁLISE -*-*-*-*-*-\n"+analise;
         jtaOutput.setText(output);
     }
-    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButtonResetActionPerformed() {
         System.out.println("RESET CALL");
         controlUI(false);
         output = "";
