@@ -39,6 +39,7 @@ public class TuringMachine {
             output = resultLabel+"\n"
                     +"Passo | "+"Estado atual | "+"Simbolo lido | "+"Sentido | "+"Fita\n"
                     + stepsField.toString();
+            stepsField.setLength(0);
             return output;
 
         }
