@@ -10,7 +10,6 @@ public class TuringMachine {
     private List<Character> alphabet = new ArrayList<>();
     private List<Transition> transitions = new ArrayList<>();
     private String initialState = "";
-    private String finalState = "";
     private ArrayList<String> finalStates = new ArrayList<>();
     private String sentence = "";
     private StringBuilder stepsField = new StringBuilder();
@@ -37,9 +36,8 @@ public class TuringMachine {
         if(isValidTape(tape)){
             setSentence(tape);
             runTuringMachine();
-            output = resultLabel+"\n"
-                    +"Passo | "+"Estado atual | "+"Simbolo lido | "+"Sentido | "+"Fita\n"
-                    + stepsField.toString();
+            output = "Passo     | Estado atual |       Simbolo lido       |     Sentido     |  Fita\n"
+                    + stepsField.toString()+"\n"+resultLabel;
             stepsField.setLength(0);
             return output;
 
@@ -77,7 +75,7 @@ public class TuringMachine {
         result.append("Simbolo final: ").append(endSymbol).append("\n");
         result.append("Alfabeto: ").append(alphabet).append("\n");
         result.append("Estado inicial: ").append(initialState).append("\n");
-        result.append("Estado final: ").append(finalStates).append("\n");
+        result.append(finalStates.size()<2?"Estado Final: ":"Estados finais: ").append(finalStates).append("\n");
         result.append("Transições:\n");
         for (Transition t : transitions) {
             result.append(t.saida()).append("\n");
@@ -114,7 +112,7 @@ public class TuringMachine {
                 firstSpace = "";
 
             if (transitionFound == null) {
-                resultLabel = "Sentença Rejeitada!";
+                resultLabel = "❌ Sentença Rejeitada! ❌";
                 break;
             }
 
@@ -144,8 +142,7 @@ public class TuringMachine {
                 stepsField.append(firstSpace+step + "                    " + currentState +
                         "                         " + currentSymbol + "                   " +transitionFound.direction+
                         "           " + tapeToString(tape) + "\n");
-                resultLabel = "Sentença Aceita!";
-                finalState = currentState;
+                resultLabel = "Sentença Aceita! ✅";
                 break;
             }
         }
