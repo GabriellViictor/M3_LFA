@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="M3_LFA:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/M3_LFA_jar</output-path>
+    <root id="archive" name="M3_LFA.jar">
+      <element id="module-output" name="M3_LFA" />
+    </root>
+  </artifact>
+</component>
